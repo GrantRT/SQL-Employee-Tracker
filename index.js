@@ -109,16 +109,71 @@ const addDepartment = () => {
     ])
     .then((answer) => {
       const sql = `INSERT INTO department(name) VALUES (?)`;
-      db.query(sql, answer.departmentName, (err, rows) => {
+      db.query(sql, answer.departmentName, (err, res) => {
         if (err) {
           console.log(err);
           return;
         } else {
-          console.log('Added department successfully');
+          console.log('Added the department successfully');
           init();
         }
       });
     });
+};
+
+const addRole = () => {
+  updateDepartmentArr();
+  return inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'roleName',
+        message: 'What is the name of the role?',
+      },
+      {
+        type: 'input',
+        name: 'roleSalary',
+        message: 'What is the salary of the role?',
+      },
+      {
+        type: 'list',
+        name: 'roleDepartment',
+        message: 'Which department does the role belong to?',
+        choices: departmentArr,
+      },
+    ])
+    .then((answers) => {
+      const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?)`;
+      db.query(sql, [[answers.roleName, answers.roleSalary, answers.roleDepartment]], (err, res) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Added the role successfully');
+          init();
+        }
+      });
+    });
+};
+
+// Empty array to be populated with the different departments, to then be used as the choices for the list inquirer prompt
+const departmentArr = [];
+
+// A function to update the department array, called when the user wants to add a new role.
+const updateDepartmentArr = () => {
+  const sql = `SELECT * FROM department`;
+  db.query(sql, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.forEach((department) => {
+        let departmentObj = {
+          name: department.name,
+          value: department.id,
+        };
+        departmentArr.push(departmentObj);
+      });
+    }
+  });
 };
 
 // Function call to initialise the app
