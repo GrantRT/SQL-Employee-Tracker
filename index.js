@@ -176,5 +176,84 @@ const updateDepartmentArr = () => {
   });
 };
 
+const addEmployee = () => {
+  updateRolesArr();
+  updateManagerArr();
+  return inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'employeeFirstName',
+        message: "What is employee's first name?",
+      },
+      {
+        type: 'input',
+        name: 'employeeLastName',
+        message: "What is the employee's last name?",
+      },
+      {
+        type: 'list',
+        name: 'employeeRole',
+        message: "What is the employee's role?",
+        choices: rolesArr,
+      },
+      {
+        type: 'list',
+        name: 'employeeManager',
+        message: "Who is the employee's manager?",
+        choices: managerArr,
+      },
+    ])
+    .then((answers) => {
+      const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?)`;
+      db.query(sql, [[answers.employeeFirstName, answers.employeeLastName, answers.employeeRole, answers.employeeManager]], (err, res) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Added the employee successfully');
+          init();
+        }
+      });
+    });
+};
+
+const rolesArr = [];
+
+const updateRolesArr = () => {
+  const sql = `SELECT * FROM roles`;
+  db.query(sql, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.forEach((role) => {
+        let roleObj = {
+          name: role.title,
+          value: role.id,
+        };
+        rolesArr.push(roleObj);
+      });
+    }
+  });
+};
+
+const managerArr = [];
+
+const updateManagerArr = () => {
+  const sql = `SELECT * FROM employee`;
+  db.query(sql, (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.forEach((manager) => {
+        let managerObj = {
+          name: manager.first_name + ' ' + manager.last_name,
+          value: manager.id,
+        };
+        managerArr.push(managerObj);
+      });
+    }
+  });
+};
+
 // Function call to initialise the app
 init();
