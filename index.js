@@ -98,5 +98,28 @@ const viewAllEmployees = () => {
   });
 };
 
+const addDepartment = () => {
+  return inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'departmentName',
+        message: 'What is the name of the department?',
+      },
+    ])
+    .then((answer) => {
+      const sql = `INSERT INTO department(name) VALUES (?)`;
+      db.query(sql, answer.departmentName, (err, rows) => {
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          console.log('Added department successfully');
+          init();
+        }
+      });
+    });
+};
+
 // Function call to initialise the app
 init();
