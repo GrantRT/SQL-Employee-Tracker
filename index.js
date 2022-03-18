@@ -179,7 +179,7 @@ const updateDepartmentArr = () => {
 
 const addEmployee = () => {
   updateRolesArr();
-  updateManagerArr();
+  updateEmployeeArr();
 
   return inquirer
     .prompt([
@@ -203,7 +203,7 @@ const addEmployee = () => {
         type: 'list',
         name: 'employeeManager',
         message: "Who is the employee's manager?",
-        choices: managerArr,
+        choices: employeeArr,
       },
     ])
     .then((answers) => {
@@ -239,21 +239,21 @@ const updateRolesArr = () => {
   });
 };
 
-// Empty array to be populated with the different managers, to then be used as the choices for the list inquirer prompt
-const managerArr = [];
+// Empty array to be populated with the different employees, to then be used as the choices for the list inquirer prompt
+const employeeArr = [];
 
-const updateManagerArr = () => {
+const updateEmployeeArr = () => {
   const sql = `SELECT * FROM employee`;
   db.query(sql, (err, res) => {
     if (err) {
       console.log(err);
     } else {
-      res.forEach((manager) => {
-        let managerObj = {
-          name: manager.first_name + ' ' + manager.last_name,
-          value: manager.id,
+      res.forEach((employee) => {
+        let employeeObj = {
+          name: employee.first_name + ' ' + employee.last_name,
+          value: employee.id,
         };
-        managerArr.push(managerObj);
+        employeeArr.push(employeeObj);
       });
     }
   });
@@ -261,14 +261,14 @@ const updateManagerArr = () => {
 
 const updateEmployeeRole = () => {
   updateRolesArr();
-  updateManagerArr();
+  updateEmployeeArr();
   return inquirer
     .prompt([
       {
         type: 'list',
         name: 'employeeSelect',
         message: "Which employee's role do you want to update?",
-        choices: managerArr,
+        choices: employeeArr,
       },
       {
         type: 'list',
