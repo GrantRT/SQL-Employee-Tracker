@@ -149,6 +149,7 @@ const addRole = () => {
           console.log(err);
         } else {
           console.log('Added the role successfully');
+
           init();
         }
       });
@@ -179,12 +180,13 @@ const updateDepartmentArr = () => {
 const addEmployee = () => {
   updateRolesArr();
   updateManagerArr();
+
   return inquirer
     .prompt([
       {
         type: 'input',
         name: 'employeeFirstName',
-        message: "What is employee's first name?",
+        message: "What is the employee's first name?",
       },
       {
         type: 'input',
@@ -217,6 +219,7 @@ const addEmployee = () => {
     });
 };
 
+// Empty array to be populated with the different roles, to then be used as the choices for the list inquirer prompt
 const rolesArr = [];
 
 const updateRolesArr = () => {
@@ -236,6 +239,7 @@ const updateRolesArr = () => {
   });
 };
 
+// Empty array to be populated with the different managers, to then be used as the choices for the list inquirer prompt
 const managerArr = [];
 
 const updateManagerArr = () => {
@@ -253,6 +257,37 @@ const updateManagerArr = () => {
       });
     }
   });
+};
+
+const updateEmployeeRole = () => {
+  updateRolesArr();
+  updateManagerArr();
+  return inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'employeeSelect',
+        message: "Which employee's role do you want to update?",
+        choices: managerArr,
+      },
+      {
+        type: 'list',
+        name: 'roleSelect',
+        message: 'Which role do you want to assign the selected employee?',
+        choices: rolesArr,
+      },
+    ])
+    .then((answers) => {
+      const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+      db.query(sql, [[answers.roleSelect, answers.employeeSelect]], (err, res) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Updated the employee's role successfully");
+          init();
+        }
+      });
+    });
 };
 
 // Function call to initialise the app
