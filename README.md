@@ -29,3 +29,6 @@ When the user runs the application they are given the following options:
 - Update an employee's role (The user is prompted to select an employee to update and their new role and this information is updated in the database)
 
 ## Video demonstration
+
+https://user-images.githubusercontent.com/93350224/159123057-8371f351-d072-4c98-820e-33e9ae00a8fb.mp4
+
